@@ -48,8 +48,9 @@ int curve25519_pri_key_gen(u8 *private)
 {
   char value[10] = "0123456789";
   srand(time(NULL));
-  for (int i = 0; i < 16; ++i) {
-    （uint16_t)*(p + i) = rand();
+  unsigned char i;
+  for (i = 0; i < 16; ++i) {
+    （uint16_t)(*(p + i)) = rand();
   }
   private[0] &= 248;
   private[31] &= 127;
@@ -80,11 +81,11 @@ void test_shared_secret()
   phex(prikey_bob);
 
   static const uint8_t basepoint[32] = {9};
-  curve25519_donna(pubkey_alice, prikey_alice, basepoint)
+  curve25519_donna(pubkey_alice, prikey_alice, basepoint);
   printf("pubkey_alice:");
   phex(pubkey_alice);
 
-  curve25519_donna(pubkey_bob, prikey_bob, basepoint)
+  curve25519_donna(pubkey_bob, prikey_bob, basepoint);
   printf("pubkey_bob:");
   phex(pubkey_bob);
 

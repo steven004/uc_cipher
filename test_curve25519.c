@@ -50,9 +50,10 @@ int curve25519_pri_key_gen(u8 *private)
   for (i = 0; i < 32; ++i) {
     *(private + i) = rand() & 0xff;
   }
-  private[0] &= 248;
-  private[31] &= 127;
-  private[31] |= 64;
+  // This will be done in curve25519_donna function
+  // private[0] &= 248;
+  // private[31] &= 127;
+  // private[31] |= 64;
 }
 
 static void phex(uint8_t* str)
@@ -89,10 +90,10 @@ void test_shared_secret(void)
 
   // Get shared key:
   curve25519_donna(sharedkey_alice, prikey_alice, pubkey_bob);
-  printf("sharedkey_alice:\t");
+  printf("shrdkey_alice:\t");
   phex(sharedkey_alice);
 
   curve25519_donna(sharedkey_bob, prikey_bob, pubkey_alice);
-  printf("sharedkey_bob:\t");
+  printf("shrdkey_bob:\t");
   phex(sharedkey_bob);
 }

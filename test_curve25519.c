@@ -23,6 +23,7 @@ See more at: http://cr.yp.to/ecdh.html
 #include <stdint.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #ifdef _MSC_VER
 #define inline __inline
@@ -49,7 +50,7 @@ int curve25519_pri_key_gen(u8 *private)
   srand(time(NULL));
   unsigned char i;
   for (i = 0; i < 16; ++i) {
-    *(p + i) = rand() & 0xff;
+    *(private + i) = rand() & 0xff;
   }
   private[0] &= 248;
   private[31] &= 127;

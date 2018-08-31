@@ -46,11 +46,10 @@ int main(void)
 /* private is a 32byte number */
 int curve25519_pri_key_gen(u8 *private)
 {
-  char value[10] = "0123456789";
   srand(time(NULL));
   unsigned char i;
   for (i = 0; i < 16; ++i) {
-    （uint16_t)(*(p + i)) = rand();
+    *(p + i) = rand() & 0xff;
   }
   private[0] &= 248;
   private[31] &= 127;

@@ -39,9 +39,7 @@ int curve25519_pri_key_gen(u8 *private);
 
 int main(void)
 {
-  static const uint8_t basepoint[32] = {9};
-  uint8_t shared_key[32];
-
+  test_shared_secret();
 }
 
 /* private is a 32byte number */

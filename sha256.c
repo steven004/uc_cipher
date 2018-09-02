@@ -201,7 +201,7 @@ char *buf[] = {
     "248d6a61 d20638b8 e5c02693 0c3e6039 a33ce459 64ff2167 f6ecedd4 19db06c1",
 
     "abcdbcdecdefdefgefghfghighijhijkljkljklmklmnlmnomnopnopq",
-    "248d6a61 d20638b8 e5c02693 0c3e6039 a33ce459 64ff2167 f6ecedd4 19db06c1",
+    "3fb1e295 9eaf4d1b 9edf2b80 2fbb23dd 8cf7b2be 8bbb84ef 3e8f7bad 8754722d",
 
     "The quick brown fox jumps over the lazy dog",
     "d7a8fbb3 07d78094 69ca9abc b0082e4f 8d5651e4 6d3cdb76 2d02d0bf 37c9e592",
@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
         sha256_hash(&ctx, (uint8_t *)pre_text, (uint32_t)strlen(pre_text));
         sha256_hash(&ctx, (uint8_t *)buf[j], (uint32_t)strlen(buf[j]));
         sha256_done(&ctx, hv);
-        printf("input = %s\ndigest: %s\nresult: ", buf[j], buf[j+1]);
+        printf("input = %s\nresult: ", buf[j]);
         for (i = 0; i < 32; i++) printf("%02x%s", hv[i], ((i%4)==3)?" ":"");
         printf("\n\n");
     }

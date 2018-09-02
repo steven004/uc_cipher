@@ -36,9 +36,19 @@ void UCES_decrypt_buffer(const uint8_t* key, const uint8_t* iv, uint8_t* buf, ui
 #endif // #if defined(CBC) && (CBC == 1)
 */
 
-// To get the shared key from my private key and the partner's public Key
+// To get the shared key from The server's private key and a client's public Key
 // In this version, the size of every key parameter is 32 bytes
-void UCES_shared_key(uint8_t* shared_key, const uint8_t* my_pri_key, const uint8_t* his_pup_key);
+// This functions is only invoked by a service provider on the server side
+int UCES_shared_key(uint8_t* shared_key, const uint8_t* server_pri_key, const uint8_t* client_pub_key);
+
+/*
+// To get the shared key by a client, using server's public key and user/device info
+// In this version, the size of every key parameter is 32 bytes
+// This functions is only invoked by an end user on the client side
+int UCES_shared_key_client(uint_t* shared_key, const uint8_t* user_fp,
+                            const uint8_t* device_fp, const uint8_t* server_pub_key);
+*/
+
 
 // To get the deciphering key for a particular piece of contents
 // all the parameters are 32bytes long.
@@ -56,20 +66,22 @@ void UCES_encrypt_content(const uinit8_t* uc_enc_key, uint8_t* buf, uint32_t len
 // To decrypt the content in buf using uc_dec_key (32 bytes long)
 // The length must be multiple of block size (16 bytes)
 //    otherwise, buf will be over flowed
-void UCES_decrypt_content(const uinit8_t* uc_dec_key, uint8_t* buf, uint32_t length);
+void UCES_decrypt_content(const uinit8_t* uc_dec_key, uint8_t* buf, uint32_t length,
+              const uint8_t* user_fp, const uint8_t* server_pub_key);
 
 // To generate the public key for a client from the user finger print and device finger print
 // user_fingerprint and device_fingerprint are both 32 bytes
 // pub_key: 32 bytes
-void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint, const uint8_t* device_fingerprint);
+void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint);
 
-// To generate the finger print of the user's device.
+// To generate the finger print of the user's device. (internal function, not need to invoke by users)
 // The finger print is a 32-byte number
 // This function is an example and replacible. You could write your own device finger print function
+// Please notice there is no input for this functioin, but to detect device info by the func itself
 void UCES_device_fingerprint(uint8_t* dev_fp);
 
 // To generate the finger print of a user
-// This can be custermized by a service provide, who could use any user specified information
+// This can be custermized by a service provider, who could use any user specified information
 //    such as user name, password, ID, ...
 // The finger print is a 32-byte number
 void UCES_user_fingerprint(uint8_t* user_fp, uint8_t* user_info, uint32_t length);

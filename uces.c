@@ -140,6 +140,15 @@ void UCES_decrypt_content(const uinit8_t* uc_dec_key, uint8_t* buf, uint32_t len
   AES_CBC_decrypt_buffer(&e_ctx, buf, length);
 }
 
+/*  To generate public key (32bytes) from a private key (32bytes)
+*/
+void UCES_pubkey_gen(uint8_t* pub_key, uint8_t* pri_key)
+{
+  static const uint8_t basepoint[32] = {9};
+  curve25519_donna(pub_key, pri_key, basepoint);
+}
+
+
 void UCES_encrypt_buffer(const uint8_t* key, const uint8_t* iv, uint8_t* buf, uint32_t length)
 {
   struct AES_ctx ctx;

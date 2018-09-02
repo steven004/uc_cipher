@@ -86,11 +86,10 @@ void UCES_device_fingerprint(uint8_t* dev_fp);
 // The finger print is a 32-byte number
 void UCES_user_fingerprint(uint8_t* user_fp, uint8_t* user_info, uint32_t length);
 
-// To generate 32-byte private Key
-// In general, a 32-byte number could be a private key, so, this function is not a MUST
-// You are allowed to use any other strong cryptography random mechanism for it.
-//  client_nounce: a 32-byte number from client
-void UCES_prikey_gen(uint8_t* client_nounce);
+// To generate 32-byte public Key from a private key (32bytes)
+// In general, any 32-byte number could be a private key, but, the server should use a
+//  strong cryptographic way to produce a private key, which is not include in this lib.
+void UCES_pubkey_gen(uint8_t* pub_key, uint8_t* pri_key);
 
 
 #endif //_UCES_H_

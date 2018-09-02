@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
     for (j = 0; j < (sizeof(buf)/sizeof(buf[0])); j += 2)
     {
         sha256_init(&ctx);
-        sha256_hash(&ctx, (uint8_t *)pre_test, (uint32_t)strlen(pre_text));
+        sha256_hash(&ctx, (uint8_t *)pre_text, (uint32_t)strlen(pre_text));
         sha256_hash(&ctx, (uint8_t *)buf[j], (uint32_t)strlen(buf[j]));
         sha256_done(&ctx, hv);
         printf("input = %s\ndigest: %s\nresult: ", buf[j], buf[j+1]);

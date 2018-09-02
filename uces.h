@@ -21,18 +21,11 @@
 #define AES128 1
 
 #define AES_BLOCKLEN 16 //Block length in bytes AES is 128b block only
+#define AES_KEYLEN 16 //Key lenth in bytes
+#define AES_keyExpSize 176 // 16x11
 
-#if defined(AES256) && (AES256 == 1)
-    #define AES_KEYLEN 32
-    #define AES_keyExpSize 240
-#elif defined(AES192) && (AES192 == 1)
-    #define AES_KEYLEN 24
-    #define AES_keyExpSize 208
-#else
-    #define AES_KEYLEN 16   // Key length in bytes
-    #define AES_keyExpSize 176
-#endif
-
+/*
+// In this version, only CBC mode is supported
 #if defined(CBC) && (CBC == 1)
 // buffer size MUST be mutile of AES_BLOCKLEN;
 // Suggest https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS7 for padding scheme
@@ -41,6 +34,51 @@
 void UCES_encrypt_buffer(const uint8_t* key, const uint8_t* iv, uint8_t* buf, uint32_t length);
 void UCES_decrypt_buffer(const uint8_t* key, const uint8_t* iv, uint8_t* buf, uint32_t length);
 #endif // #if defined(CBC) && (CBC == 1)
+*/
+
+// To get the shared key from my private key and the partner's public Key
+// In this version, the size of every key parameter is 32 bytes
+void UCES_shared_key(uint8_t* shared_key, const uint8_t* my_pri_key, const uint8_t* his_pup_key);
+
+// To get the deciphering key for a particular piece of contents
+// all the parameters are 32bytes long.
+//    shared_key: the key shared by the server and client who needs to read the contents
+//    uc_enc_key: the key to encrypt the particular contents
+//    uc_dec_key: the key to be used only by the particular client to decrypt the contents,
+//                anybody else who get this key could not decrypt the encoded contents
+void UCES_decrypt_key(uint8_t* uc_dec_key, const uint8_t* shared_key, const uint8_t* uc_enc_key);
+
+// To encrypt the content in buf using uc_enc_key (32 bytes long)
+// The length must be multiple of block size (16 bytes)
+//    otherwise, buf will be over flowed
+void UCES_encrypt_content(const uinit8_t* uc_enc_key, uint8_t* buf, uint32_t length);
+
+// To decrypt the content in buf using uc_dec_key (32 bytes long)
+// The length must be multiple of block size (16 bytes)
+//    otherwise, buf will be over flowed
+void UCES_decrypt_content(const uinit8_t* uc_dec_key, uint8_t* buf, uint32_t length);
+
+// To generate the public key for a client from the user finger print and device finger print
+// user_fingerprint and device_fingerprint are both 32 bytes
+// pub_key: 32 bytes
+void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint, const uint8_t* device_fingerprint);
+
+// To generate the finger print of the user's device.
+// The finger print is a 32-byte number
+// This function is an example and replacible. You could write your own device finger print function
+void UCES_device_fingerprint(uint8_t* dev_fp);
+
+// To generate the finger print of a user
+// This can be custermized by a service provide, who could use any user specified information
+//    such as user name, password, ID, ...
+// The finger print is a 32-byte number
+void UCES_user_fingerprint(uint8_t* user_fp, uint8_t* user_info, uint32_t length);
+
+// To generate 32-byte private Key
+// In general, a 32-byte number could be a private key, so, this function is not a MUST
+// You are allowed to use any other strong cryptography random mechanism for it.
+//  client_nounce: a 32-byte number from client
+void UCES_prikey_gen(uint8_t* client_nounce);
 
 
 #endif //_UCES_H_

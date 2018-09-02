@@ -200,6 +200,9 @@ char *buf[] = {
     "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
     "248d6a61 d20638b8 e5c02693 0c3e6039 a33ce459 64ff2167 f6ecedd4 19db06c1",
 
+    "abcdbcdecdefdefgefghfghighijhijkljkljklmklmnlmnomnopnopq",
+    "248d6a61 d20638b8 e5c02693 0c3e6039 a33ce459 64ff2167 f6ecedd4 19db06c1",
+
     "The quick brown fox jumps over the lazy dog",
     "d7a8fbb3 07d78094 69ca9abc b0082e4f 8d5651e4 6d3cdb76 2d02d0bf 37c9e592",
 
@@ -226,7 +229,7 @@ int main(int argc, char *argv[])
         printf("\n\n");
     }
 
-    char* pre_text = "UC fingerprint:"
+    char* pre_text = "UC fingerprint:";
     for (j = 0; j < (sizeof(buf)/sizeof(buf[0])); j += 2)
     {
         sha256_init(&ctx);

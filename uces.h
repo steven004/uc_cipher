@@ -7,22 +7,6 @@
 
 #include <stdint.h>
 
-// In the first version, also for safety reason, only CBC mode is supported
-#ifndef CBC
-  #define CBC 1
-#endif
-
-// particularly for Ulord content cryptography
-#ifndef ENHANCED_AES
-  #define ENHANCED_AES 1
-#endif
-
-// 128bit key as default
-#define AES128 1
-
-#define AES_BLOCKLEN 16 //Block length in bytes AES is 128b block only
-#define AES_KEYLEN 16 //Key lenth in bytes
-#define AES_keyExpSize 176 // 16x11
 
 /*
 // In this version, only CBC mode is supported

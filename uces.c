@@ -33,7 +33,7 @@ int UCES_shared_key(uint8_t* shared_key, const uint8_t* server_pri_key, const ui
 void UCES_user_fingerprint(uint8_t* user_fp, uint8_t* user_info, uint32_t length)
 {
   sha256_context ctx;
-  const char* pre_text = "UC ciphering version#1";
+  const char* pre_text = "UC ciphering version 1.0";
 
   sha256_init(&ctx);
   sha256_hash(&ctx, (uint8_t *)pre_text, (uint32_t)strlen(pre_text));

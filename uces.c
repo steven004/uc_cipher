@@ -30,7 +30,7 @@ int UCES_shared_key(uint8_t* shared_key, const uint8_t* server_pri_key, const ui
 }
 
 /* Generate user fingerprint from user_info */
-void UCES_user_fingerprint(uint8_t* user_fp, uint8_t* user_info, uint32_t length)
+void UCES_user_fingerprint(uint8_t* user_fp, const uint8_t* user_info, uint32_t length)
 {
   sha256_context ctx;
   const char* pre_text = "UC ciphering version 1.0";
@@ -58,7 +58,7 @@ void UCES_device_fingerprint(uint8_t* device_fp)
   memcpy(device_info.cpu_info, "Intel Core 2 Duo", 16);
   memcpy(device_info.mac_address, "\0x2345fd874587", 6);
   memcpy(device_info.OS_type, "OSX-MACBOOK     ", 10);
-  UCES_user_fingerprint(device_fp, (uint8_t *)device_info, (uint32_t)sizeof(device_context));
+  UCES_user_fingerprint(device_fp, (uint8_t *)&device_info, (uint32_t)sizeof(device_context));
 }
 
 /* To get the a client's public key, which also depends on the device used by the users
@@ -68,7 +68,7 @@ void UCES_device_fingerprint(uint8_t* device_fp)
   2) to generate the corresponding private key
   3) to calculate the corresponding public key
 */
-void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint)
+void UCES_client_pubkey(uint8_t* pub_key, uint8_t* user_fingerprint)
 {
   uint8_t device_fp[32];
   uint8_t pri_key[32];
@@ -118,7 +118,7 @@ void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t leng
   5) decode the content
 */
 void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
-              const uint8_t* user_fp, const uint8_t* server_pub_key)
+              uint8_t* user_fp, const uint8_t* server_pub_key)
 {
   struct AES_ctx e_ctx;
   uint8_t uc_enc_key[32];

@@ -100,7 +100,7 @@ void UCES_decrypt_key(uint8_t* uc_dec_key, const uint8_t* shared_key, const uint
    There are two parts in the uc_enc_key: 1) symmetric key: 128bits, 2) iv: 128bits
    the length must be multiple of 16
 */
-void UCES_encrypt_content(const uinit8_t* uc_enc_key, uint8_t* buf, uint32_t length)
+void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t length)
 {
   struct AES_ctx ctx;
 
@@ -117,7 +117,7 @@ void UCES_encrypt_content(const uinit8_t* uc_enc_key, uint8_t* buf, uint32_t len
   4) decrypt the symmetric key for content
   5) decode the content
 */
-void UCES_decrypt_content(const uinit8_t* uc_dec_key, uint8_t* buf, uint32_t length,
+void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
               const uint8_t* user_fp, const uint8_t* server_pub_key)
 {
   struct AES_ctx e_ctx;
@@ -125,13 +125,13 @@ void UCES_decrypt_content(const uinit8_t* uc_dec_key, uint8_t* buf, uint32_t len
   uint8_t device_fp[32];
   uint8_t pri_key[32];
   sha256_context sha_ctx;
-  uint8_t shared_key[32]
+  uint8_t shared_key[32];
 
   UCES_device_fingerprint(device_fp);
-  sha256_init(&ctx);
-  sha256_hash(&ctx, user_fingerprint, 32);
-  sha256_hash(&ctx, device_fp, 32);
-  sha256_done(&ctx, pri_key);
+  sha256_init(&sha_ctx);
+  sha256_hash(&sha_ctx, user_fingerprint, 32);
+  sha256_hash(&sha_ctx, device_fp, 32);
+  sha256_done(&sha_ctx, pri_key);
 
   curve25519_donna(shared_key, pri_key, server_pub_key);
   UCES_decrypt_key(uc_enc_key, shared_key, uc_dec_key);

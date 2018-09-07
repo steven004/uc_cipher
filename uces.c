@@ -18,7 +18,7 @@ NOTE:   In this encryption/decryption, 128bit key and 128bit iv are required
 #include "sha256.h"
 
 /* The implementation also depends on curve25519-donna.c */
-int curve25519_donna(u8 *shared_key, const u8 *my_pri_key, const u8 *his_pub_key);
+int curve25519_donna(uint8_t *shared_key, const uint8_t *my_pri_key, const uint8_t *his_pub_key);
 
 /* Generate shared key based on my private key and the opposite public key
    All the keys are 32bytes
@@ -58,7 +58,7 @@ void UCES_device_fingerprint(uint8_t* device_fp)
   memcpy(device_info.cpu_info, "Intel Core 2 Duo", 16);
   memcpy(device_info.mac_address, "\0x2345fd874587", 6);
   memcpy(device_info.OS_type, "OSX-MACBOOK     ", 10);
-  UCES_user_fingerprint(device_fp, (uint8_t *)device_info, (uint32_t)sizeof(device_context))
+  UCES_user_fingerprint(device_fp, (uint8_t *)device_info, (uint32_t)sizeof(device_context));
 }
 
 /* To get the a client's public key, which also depends on the device used by the users
@@ -129,7 +129,7 @@ void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t leng
 
   UCES_device_fingerprint(device_fp);
   sha256_init(&sha_ctx);
-  sha256_hash(&sha_ctx, user_fingerprint, 32);
+  sha256_hash(&sha_ctx, user_fp, 32);
   sha256_hash(&sha_ctx, device_fp, 32);
   sha256_done(&sha_ctx, pri_key);
 

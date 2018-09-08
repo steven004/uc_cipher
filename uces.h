@@ -68,7 +68,7 @@ void UCES_device_fingerprint(uint8_t* dev_fp);
 // This can be custermized by a service provider, who could use any user specified information
 //    such as user name, password, ID, ...
 // The finger print is a 32-byte number
-void UCES_user_fingerprint(uint8_t* user_fp, uint8_t* user_info, uint32_t length);
+void UCES_user_fingerprint(uint8_t* user_fp, const uint8_t* user_info, uint32_t length);
 
 // To generate 32-byte public Key from a private key (32bytes)
 // In general, any 32-byte number could be a private key, but, the server should use a

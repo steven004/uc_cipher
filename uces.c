@@ -36,7 +36,7 @@ int UCES_shared_key(uint8_t* shared_key, const uint8_t* server_pri_key, const ui
 }
 
 /* Generate user fingerprint from user_info */
-void UCES_user_fingerprint(uint8_t* user_fp, uint8_t* user_info, uint32_t length)
+void UCES_user_fingerprint(uint8_t* user_fp, const uint8_t* user_info, uint32_t length)
 {
   sha256_context ctx;
   const char* pre_text = "UC ciphering version 1.0";
@@ -85,6 +85,7 @@ void UCES_device_fingerprint(uint8_t* device_fp)
   2) to generate the corresponding private key
   3) to calculate the corresponding public key
 */
+
 void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint, void (*device_fp_cb)(uint8_t* dev_fp))
 {
   uint8_t device_fp[32];
@@ -153,6 +154,7 @@ void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t leng
 
   UCES_device_fingerprint(device_fp);
   sha256_init(&sha_ctx);
+
   sha256_hash(&sha_ctx, user_fingerprint, 32);
   sha256_hash(&sha_ctx, device_fp, 32);
   sha256_done(&sha_ctx, pri_key);

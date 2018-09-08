@@ -13,7 +13,7 @@ def test_fp(user_info):
     user_fp = create_string_buffer(32)
     uc_cipher.UCES_user_fingerprint(user_fp, user_info, 60)
     # print_key(user_fp)
-    print(repr(user_info))
+    print(repr(user_info.value))
     print_key(user_fp)
 
 if __name__ == '__main__':

@@ -13,9 +13,15 @@ NOTE:   In this encryption/decryption, 128bit key and 128bit iv are required
 /*****************************************************************************/
 #include <stdint.h>
 #include <string.h> // CBC mode, for memset
+#include <stdint.h>
 #include "aes.h"
 #include "uces.h"
 #include "sha256.h"
+
+#include <sys/utsname.h>
+
+void get_cpuid (char *id);
+int get_mac(char* mac);
 
 /* The implementation also depends on curve25519-donna.c */
 int curve25519_donna(uint8_t *shared_key, const uint8_t *my_pri_key, const uint8_t *his_pub_key);
@@ -54,10 +60,21 @@ void UCES_device_fingerprint(uint8_t* device_fp)
       uint8_t OS_type[16];
   } device_context;
 
+  
+
   device_context device_info;
-  memcpy(device_info.cpu_info, "Intel Core 2 Duo", 16);
-  memcpy(device_info.mac_address, "\0x2345fd874587", 6);
-  memcpy(device_info.OS_type, "OSX-MACBOOK     ", 10);
+
+  //memcpy(device_info.cpu_info, "Intel Core 2 Duo", 16);
+  get_cpuid((char *)device_info.cpu_info);
+  
+  //memcpy(device_info.mac_address, "\0x2345fd874587", 6);
+  get_mac((char *)device_info.mac_address);
+
+  struct utsname  u;
+  if (uname(&u) != -1) {
+      memcpy(device_info.OS_type, u.release, 16);
+  }
+
   UCES_user_fingerprint(device_fp, (uint8_t *)&device_info, (uint32_t)sizeof(device_context));
 }
 
@@ -68,16 +85,23 @@ void UCES_device_fingerprint(uint8_t* device_fp)
   2) to generate the corresponding private key
   3) to calculate the corresponding public key
 */
-void UCES_client_pubkey(uint8_t* pub_key, uint8_t* user_fingerprint)
+
+void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint, void (*device_fp_cb)(uint8_t* dev_fp))
 {
   uint8_t device_fp[32];
   uint8_t pri_key[32];
   sha256_context ctx;
   static const uint8_t basepoint[32] = {9};
+  uint8_t user_fingerprint_tmp[32];
 
-  UCES_device_fingerprint(device_fp);
+  memcpy(user_fingerprint_tmp, user_fingerprint, 32);
+
+  if (device_fp_cb)
+    device_fp_cb(device_fp);
+  else
+    UCES_device_fingerprint(device_fp);
   sha256_init(&ctx);
-  sha256_hash(&ctx, user_fingerprint, 32);
+  sha256_hash(&ctx, user_fingerprint_tmp, 32);
   sha256_hash(&ctx, device_fp, 32);
   sha256_done(&ctx, pri_key);
 
@@ -118,18 +142,20 @@ void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t leng
   5) decode the content
 */
 void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
-              uint8_t* user_fp, const uint8_t* server_pub_key)
+              const uint8_t* user_fp, const uint8_t* server_pub_key)
 {
   struct AES_ctx e_ctx;
   uint8_t uc_enc_key[32];
   uint8_t device_fp[32];
+  uint8_t user_fingerprint[32];
   uint8_t pri_key[32];
   sha256_context sha_ctx;
   uint8_t shared_key[32];
 
   UCES_device_fingerprint(device_fp);
   sha256_init(&sha_ctx);
-  sha256_hash(&sha_ctx, user_fp, 32);
+
+  sha256_hash(&sha_ctx, user_fingerprint, 32);
   sha256_hash(&sha_ctx, device_fp, 32);
   sha256_done(&sha_ctx, pri_key);
 

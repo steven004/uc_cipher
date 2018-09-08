@@ -1,43 +1,41 @@
-#CC           = avr-gcc
-#CFLAGS       = -Wall -mmcu=atmega16 -Os -Wl,-Map,test.map
-#OBJCOPY      = avr-objcopy
 CC           = gcc
 LD           = gcc
-CFLAGS       = -Wall -Os -c
-LDFLAGS      = -Wall -Os -Wl,-Map,test.map
+CFLAGS       = -Wall -Os -c -fPIC
+LDFLAGS      = 
+EXECS        = aes_test test_curve25519 uc_test
 
-OBJCOPYFLAFS = -j .text -O ihex
-OBJCOPY      = objcopy
+default: aes_test test_curve25519 uc_test
 
-# include path to AVR library
-INCLUDE_PATH = /usr/lib/avr/include
-# splint static check
-SPLINT       = splint test.c aes.c -I$(INCLUDE_PATH) +charindex -unrecog
+libuces.a: uces.o aes.o sha256.o curve25519-c64.o uces.o
+	ar -rc $@ $^
+	ranlib $@
 
-default: test.elf
-
-.SILENT:
-.PHONY:  lint clean
-
-test.hex : test.elf
-	echo copy object-code to new image and format in hex
-	$(OBJCOPY) ${OBJCOPYFLAFS} $< $@
-
-test.o : test.c aes.h aes.o
-	echo [CC] $@
-	$(CC) $(CFLAGS) -o  $@ $<
+libuces.so: uces.o aes.o sha256.o curve25519-c64.o uces.o
+	$(CC) -shared -o $@ $^ 
 
 aes.o : aes.c aes.h
-	echo [CC] $@
 	$(CC) $(CFLAGS) -o $@ $<
 
-test.elf : aes.o test.o
-	echo [LD] $@
-	$(LD) $(LDFLAGS) -o $@ $^
+sha256.o : sha256.c sha256.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+curve25519-c64.o : curve25519-c64.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+uces.o : uces.c uces.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+aes_test  : aes_test.c libuces.a
+	$(CC) $(LDFLAGS) -o $@ $^
+
+test_curve25519  : test_curve25519.c libuces.a 
+	$(CC) $(LDFLAGS) -o $@ $^
+
+uc_test  : uc_test.c libuces.so
+	$(CC) $(LDFLAGS) -o $@ $^
+
 
 
 clean:
-	rm -f *.OBJ *.LST *.o *.gch *.out *.hex *.map
-
-lint:
-	$(call SPLINT)
+	rm -f *.o *.a *.so
+	rm -f $(EXECS) 

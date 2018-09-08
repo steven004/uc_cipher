@@ -33,7 +33,7 @@ ECB-AES128
 
 #include "aes.h"
 
-#ifndef ENHANCED_AES
+//#ifndef ENHANCED_AES
 
 static void phex(uint8_t* str);
 static void test_encrypt_cbc(void);
@@ -422,4 +422,4 @@ static void test_decrypt_ecb(void)
     }
 }
 
-#endif
+//#endif

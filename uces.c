@@ -13,12 +13,13 @@ NOTE:   In this encryption/decryption, 128bit key and 128bit iv are required
 /*****************************************************************************/
 #include <stdint.h>
 #include <string.h> // CBC mode, for memset
+#include <stdint.h>
 #include "aes.h"
 #include "uces.h"
 #include "sha256.h"
 
 /* The implementation also depends on curve25519-donna.c */
-int curve25519_donna(u8 *shared_key, const u8 *my_pri_key, const u8 *his_pub_key);
+int curve25519_donna(uint8_t *shared_key, const uint8_t *my_pri_key, const uint8_t *his_pub_key);
 
 /* Generate shared key based on my private key and the opposite public key
    All the keys are 32bytes
@@ -58,7 +59,7 @@ void UCES_device_fingerprint(uint8_t* device_fp)
   memcpy(device_info.cpu_info, "Intel Core 2 Duo", 16);
   memcpy(device_info.mac_address, "\0x2345fd874587", 6);
   memcpy(device_info.OS_type, "OSX-MACBOOK     ", 10);
-  UCES_user_fingerprint(device_fp, (uint8_t *)device_info, (uint32_t)sizeof(device_context))
+  UCES_user_fingerprint(device_fp, (uint8_t *)&device_info, (uint32_t)sizeof(device_context));
 }
 
 /* To get the a client's public key, which also depends on the device used by the users
@@ -74,10 +75,12 @@ void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint)
   uint8_t pri_key[32];
   sha256_context ctx;
   static const uint8_t basepoint[32] = {9};
+  uint8_t user_fingerprint_tmp[32];
 
+  memcpy(user_fingerprint_tmp, user_fingerprint, 32);
   UCES_device_fingerprint(device_fp);
   sha256_init(&ctx);
-  sha256_hash(&ctx, user_fingerprint, 32);
+  sha256_hash(&ctx, user_fingerprint_tmp, 32);
   sha256_hash(&ctx, device_fp, 32);
   sha256_done(&ctx, pri_key);
 
@@ -100,7 +103,7 @@ void UCES_decrypt_key(uint8_t* uc_dec_key, const uint8_t* shared_key, const uint
    There are two parts in the uc_enc_key: 1) symmetric key: 128bits, 2) iv: 128bits
    the length must be multiple of 16
 */
-void UCES_encrypt_content(const uinit8_t* uc_enc_key, uint8_t* buf, uint32_t length)
+void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t length)
 {
   struct AES_ctx ctx;
 
@@ -117,21 +120,22 @@ void UCES_encrypt_content(const uinit8_t* uc_enc_key, uint8_t* buf, uint32_t len
   4) decrypt the symmetric key for content
   5) decode the content
 */
-void UCES_decrypt_content(const uinit8_t* uc_dec_key, uint8_t* buf, uint32_t length,
+void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
               const uint8_t* user_fp, const uint8_t* server_pub_key)
 {
   struct AES_ctx e_ctx;
   uint8_t uc_enc_key[32];
   uint8_t device_fp[32];
+  uint8_t user_fingerprint[32];
   uint8_t pri_key[32];
   sha256_context sha_ctx;
-  uint8_t shared_key[32]
+  uint8_t shared_key[32];
 
   UCES_device_fingerprint(device_fp);
-  sha256_init(&ctx);
-  sha256_hash(&ctx, user_fingerprint, 32);
-  sha256_hash(&ctx, device_fp, 32);
-  sha256_done(&ctx, pri_key);
+  sha256_init(&sha_ctx);
+  sha256_hash(&sha_ctx, user_fingerprint, 32);
+  sha256_hash(&sha_ctx, device_fp, 32);
+  sha256_done(&sha_ctx, pri_key);
 
   curve25519_donna(shared_key, pri_key, server_pub_key);
   UCES_decrypt_key(uc_enc_key, shared_key, uc_dec_key);

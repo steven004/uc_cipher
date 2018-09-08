@@ -96,4 +96,5 @@ void test_shared_secret(void)
   curve25519_donna(sharedkey_bob, prikey_bob, pubkey_alice);
   printf("shrdkey_bob:\t");
   phex(sharedkey_bob);
+  printf("\n\n");
 }

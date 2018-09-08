@@ -6,11 +6,11 @@ EXECS        = aes_test test_curve25519 uc_test
 
 default: aes_test test_curve25519 uc_test
 
-libuces.a: uces.o aes.o sha256.o curve25519-c64.o uces.o
+libuces.a: aes.o sha256.o curve25519-c64.o utils.o uces.o
 	ar -rc $@ $^
 	ranlib $@
 
-libuces.so: uces.o aes.o sha256.o curve25519-c64.o uces.o
+libuces.so: aes.o sha256.o curve25519-c64.o utils.o uces.o
 	$(CC) -shared -o $@ $^ 
 
 aes.o : aes.c aes.h
@@ -23,6 +23,9 @@ curve25519-c64.o : curve25519-c64.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 uces.o : uces.c uces.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+utils.o : utils.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 aes_test  : aes_test.c libuces.a

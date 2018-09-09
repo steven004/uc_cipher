@@ -36,7 +36,7 @@ def test_UCES_encrypt_content():
                                 "qwertyuiopasdfghjklzxcvbnm[];,./")
     print(uc_enc_key)
     print_key(buf, 64)
-    uc_cipher.UCES_encrypt_buffer(uc_enc_key, buf, 64)
+    uc_cipher.UCES_encrypt_content(uc_enc_key, buf, 64)
     print_key(buf, 64)
 
 
@@ -44,4 +44,3 @@ def test_UCES_encrypt_content():
 if __name__ == '__main__':
     test_UCES_user_fingerprint()
     test_UCES_encrypt_content()
-    

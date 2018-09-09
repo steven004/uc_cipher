@@ -1,6 +1,6 @@
 from ctypes import *
 
-UC_CIPHER_LIB_PATH = "/home/steven004/uc_cipher/uc_cipher.so"
+UC_CIPHER_LIB_PATH = "/home/steven004/uc_cipher/libuces.so"
 
 def print_key(key, length=32):
     for i in xrange(length):
@@ -19,7 +19,7 @@ def test_fp(user_info):
 def test_UCES_user_fingerprint():
     # To test UCES_user_fingerprint function by using string.
     print("Test UCES_user_fingerprint function")
-    // TODO: to create a structure, instead of using a string only
+    # TODO: to create a structure, instead of using a string only
     user_info1 = create_string_buffer("The user's information, including many things", 80)
     test_fp(user_info1)
     user_info2 = create_string_buffer("The user's information, including mamy things", 80)
@@ -44,3 +44,4 @@ def test_UCES_encrypt_content():
 if __name__ == '__main__':
     test_UCES_user_fingerprint()
     test_UCES_encrypt_content()
+    

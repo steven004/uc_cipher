@@ -83,7 +83,7 @@ void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
 void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
 {
     sha256_context ctx;
-    timeval t1, t2;
+    struct timeval t1, t2;
     uint64_t r;
 
     sha256_init(&ctx);

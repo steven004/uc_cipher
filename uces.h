@@ -25,7 +25,7 @@ void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t leng
 //    pubkey_client: the particular client's public key
 //  Output: uc_dec_key: 64 bytes, the key for the particular client to decrypt the particular content
 void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num,
-                        const uint8_t* uc_enc_key, const uint8_t* pubkey_client)
+                        const uint8_t* uc_enc_key, const uint8_t* pubkey_client);
 
 
 // To generate the finger print of a user

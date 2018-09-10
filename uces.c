@@ -78,6 +78,8 @@ void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
 
 // Random function: to generate a 32-byte random number
 // The random number could be used as a key or a seed for Keys
+// This function is a reference, the user can use other random function too
+// Suggest: seed1 and seed2 are from client and service sindes respectively
 void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
 {
     sha256_context ctx;

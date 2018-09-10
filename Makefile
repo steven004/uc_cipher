@@ -6,6 +6,7 @@ EXECS        = aes_test test_curve25519 uc_test test_server_client
 
 default: $(EXECS)
 
+
 libuces.a: aes.o sha256.o curve25519-c64.o utils.o uces.o
 	ar -rc $@ $^
 	ranlib $@
@@ -39,6 +40,7 @@ uc_test  : uc_test.c libuces.so
 
 test_server_client  : test_server_client.c libuces.so
 	$(CC) $(LDFLAGS) -o $@ $^
+
 
 
 clean:

@@ -107,6 +107,7 @@ void UCES_device_fingerprint(uint8_t* device_fp)
   device_context device_info;
   memset(&device_info, 0, sizeof(device_context));
 
+
   //memcpy(device_info.cpu_info, "Intel Core 2 Duo", 16);
   get_cpuid((char *)device_info.cpu_info);
   
@@ -129,11 +130,11 @@ void UCES_client_prikey(uint8_t* pri_key, const uint8_t* user_fingerprint, void 
   2) to generate the corresponding private key
   3) to calculate the corresponding public key
 */
-
 {
   uint8_t device_fp[32] = {0};
   sha256_context ctx;
   uint8_t user_fingerprint_tmp[32] = {0};
+
 
   memcpy(user_fingerprint_tmp, user_fingerprint, 32);
 
@@ -234,6 +235,7 @@ void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t leng
   4) decrypt the symmetric key for content
   5) decode the content
 */
+
 /*void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
               const uint8_t* user_fp, const uint8_t* server_pub_key)
 {

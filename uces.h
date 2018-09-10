@@ -56,6 +56,7 @@ void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t leng
 void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
               const uint8_t* user_fp, void (*device_fp)(uint8_t* dev_fp));
 
+
 // To generate the public key for a client from the user finger print and device finger print
 // user_fingerprint and device_fingerprint are both 32 bytes
 // pub_key: 32 bytes

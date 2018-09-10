@@ -88,7 +88,7 @@ void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
 
     sha256_init(&ctx);
     gettimeofday(&t1, NULL);
-    if (seed1 == 0) seed1 = 0x8325ab07
+    if (seed1 == 0) seed1 = 0x8325ab07;
     sha256_hash(&ctx, (uint8_t *)&seed1, 4);
     sha256_hash(&ctx, (uint8_t *)&t1, sizeof(timeval));
     if (seed2 == 0)
@@ -97,8 +97,8 @@ void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
       seed2 = t2.tv_usec - t1.tv_usec;
     }
     srand(seed2); r=rand();
-    sha256_hash(&ctx, (uint8_t *)&r, 8)
-    sha256_done(&ctx, rand_num)
+    sha256_hash(&ctx, (uint8_t *)&r, 8);
+    sha256_done(&ctx, rand_num);
 }
 
 

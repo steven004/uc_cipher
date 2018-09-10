@@ -84,18 +84,20 @@ void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
 {
     sha256_context ctx;
     timeval t1, t2;
+    uint64_t r;
 
     sha256_init(&ctx);
     gettimeofday(&t1, NULL);
     if (seed1 == 0) seed1 = 0x8325ab07
     sha256_hash(&ctx, (uint8_t *)&seed1, 4);
-    sha256_hash(&ctx, (uint8_t *)&t1, sizeof(timeval))
+    sha256_hash(&ctx, (uint8_t *)&t1, sizeof(timeval));
     if (seed2 == 0)
     {
-      gettimeofday(&t2, NULL)
-      seed2 = t2.tv_usec - t1.tv_usec
+      gettimeofday(&t2, NULL);
+      seed2 = t2.tv_usec - t1.tv_usec;
     }
-    sha256_hash(&ctx, (uint8_t *)&seed2, 4)
+    srand(seed2); r=rand();
+    sha256_hash(&ctx, (uint8_t *)&r, 8)
     sha256_done(&ctx, rand_num)
 }
 

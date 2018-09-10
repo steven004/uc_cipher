@@ -2,9 +2,9 @@ CC           = gcc
 LD           = gcc
 CFLAGS       = -Wall -Os -c -fPIC
 LDFLAGS      = 
-EXECS        = aes_test test_curve25519 uc_test
+EXECS        = aes_test test_curve25519 uc_test test_server_client
 
-default: aes_test test_curve25519 uc_test
+default: $(EXECS)
 
 libuces.a: aes.o sha256.o curve25519-c64.o utils.o uces.o
 	ar -rc $@ $^
@@ -37,6 +37,8 @@ test_curve25519  : test_curve25519.c libuces.a
 uc_test  : uc_test.c libuces.so
 	$(CC) $(LDFLAGS) -o $@ $^
 
+test_server_client  : test_server_client.c libuces.so
+	$(CC) $(LDFLAGS) -o $@ $^
 
 
 clean:

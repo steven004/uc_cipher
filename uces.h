@@ -9,6 +9,8 @@
 
 // Random function: to generate a 32-byte random number
 // The random number could be used as a key or a seed for Keys
+// This function is a reference, users can use other random function too.
+// Suggest seed1 and seed2 are from client and server respectivey for safe
 void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2);
 
 // To encrypt the content in buf using uc_enc_key (32 bytes long)
@@ -22,11 +24,10 @@ void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t leng
 //    uc_enc_key: 32-byte encrypting key for the particular piece of content
 //    pubkey_client: the particular client's public key
 //  Output: uc_dec_key: 64 bytes, the key for the particular client to decrypt the particular content
-//
 void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num,
                         const uint8_t* uc_enc_key, const uint8_t* pubkey_client)
 
-/
+
 // To generate the finger print of a user
 // This can be custermized by a service provider, who could use any user specified information
 //    such as user name, password, ID, ...

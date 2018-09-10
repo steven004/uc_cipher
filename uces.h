@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 
+void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2);
 
 /*
 // In this version, only CBC mode is supported
@@ -50,8 +51,11 @@ void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t leng
 // To decrypt the content in buf using uc_dec_key (32 bytes long)
 // The length must be multiple of block size (16 bytes)
 //    otherwise, buf will be over flowed
+//void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
+//              const uint8_t* user_fp, const uint8_t* server_pub_key);
 void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
-              const uint8_t* user_fp, const uint8_t* server_pub_key);
+              const uint8_t* user_fp, void (*device_fp)(uint8_t* dev_fp));
+
 
 // To generate the public key for a client from the user finger print and device finger print
 // user_fingerprint and device_fingerprint are both 32 bytes

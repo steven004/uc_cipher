@@ -48,8 +48,6 @@ void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint, void 
 //To decrypt the content in buf using uc_dec_key (32 bytes long)
 // The length must be multiple of block size (16 bytes)
 //    otherwise, buf will be over flowed
-//void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
-//              const uint8_t* user_fp, const uint8_t* server_pub_key);
 void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
               const uint8_t* user_fp, void (*device_fp)(uint8_t* dev_fp));
 

@@ -51,4 +51,7 @@ void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint, void 
 void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
               const uint8_t* user_fp, void (*device_fp)(uint8_t* dev_fp));
 
+// To generate 64 byte decryption key, which will send from server to client 
+void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num, const uint8_t* uc_enc_key, const uint8_t* pubkey_client);
+
 #endif //_UCES_H_

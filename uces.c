@@ -78,7 +78,7 @@ void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
 
 
 /* Generate user fingerprint from user_info */
-void UCES_user_fingerprint(uint8_t* user_fp, uint8_t* user_info, uint32_t length)
+void UCES_user_fingerprint(uint8_t* user_fp, const uint8_t* user_info, uint32_t length)
 {
   sha256_context ctx;
   const char* pre_text = "UC ciphering version 1.0";
@@ -122,6 +122,14 @@ void UCES_device_fingerprint(uint8_t* device_fp)
 }
 
 void UCES_client_prikey(uint8_t* pri_key, const uint8_t* user_fingerprint, void (*device_fp_cb)(uint8_t* dev_fp))
+/* To get the a client's public key, which also depends on the device used by the users
+  TO get the client public key, there are a few steps:
+  0) to calculate user finger print which is only related to user information (not in this function)
+  1) to detect device info and generate device finger print
+  2) to generate the corresponding private key
+  3) to calculate the corresponding public key
+*/
+
 {
   uint8_t device_fp[32] = {0};
   sha256_context ctx;
@@ -239,6 +247,7 @@ void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t leng
 
   UCES_device_fingerprint(device_fp);
   sha256_init(&sha_ctx);
+
   sha256_hash(&sha_ctx, user_fingerprint, 32);
   sha256_hash(&sha_ctx, device_fp, 32);
   sha256_done(&sha_ctx, pri_key);

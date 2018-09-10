@@ -20,6 +20,7 @@ NOTE:   In this encryption/decryption, 128bit key and 128bit iv are required
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
@@ -53,7 +54,7 @@ int UCES_shared_key(uint8_t* shared_key, const uint8_t* server_pri_key, const ui
   return curve25519_donna(shared_key, server_pri_key, client_pub_key);
 }
 
-
+/*
 void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
 {
   int      fd;
@@ -67,12 +68,33 @@ void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
     read(fd, tmp, 32);
     memcpy(rand_num, tmp, 32);
 
-
-  } 
+  }
   else {
     srand(seed1 + seed2);
     *rand_num = rand();
   }
+}
+*/
+
+// Random function: to generate a 32-byte random number
+// The random number could be used as a key or a seed for Keys
+void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
+{
+    sha256_context ctx;
+    timeval t1, t2;
+
+    sha256_init(&ctx);
+    gettimeofday(&t1, NULL);
+    if (seed1 == 0) seed1 = 0x8325ab07
+    sha256_hash(&ctx, (uint8_t *)&seed1, 4);
+    sha256_hash(&ctx, (uint8_t *)&t1, sizeof(timeval))
+    if (seed2 == 0)
+    {
+      gettimeofday(&t2, NULL)
+      seed2 = t2.tv_usec - t1.tv_usec
+    }
+    sha256_hash(&ctx, (uint8_t *)&seed2, 4)
+    sha256_done(&ctx, rand_num)
 }
 
 
@@ -102,7 +124,7 @@ void UCES_device_fingerprint(uint8_t* device_fp)
       uint8_t OS_type[16];
   } device_context;
 
-  
+
 
   device_context device_info;
   memset(&device_info, 0, sizeof(device_context));
@@ -110,7 +132,7 @@ void UCES_device_fingerprint(uint8_t* device_fp)
 
   //memcpy(device_info.cpu_info, "Intel Core 2 Duo", 16);
   get_cpuid((char *)device_info.cpu_info);
-  
+
   //memcpy(device_info.mac_address, "\0x2345fd874587", 6);
   get_mac((char *)device_info.mac_address);
 
@@ -171,17 +193,15 @@ void UCES_client_pubkey(uint8_t* pub_key, const uint8_t* user_fingerprint, void 
 }
 
 
-/* To generate the decrypt key for a particular piece of content
-  Algorithm: ENHANCED_AES
-  All Keys are 32bytes long
-*/
-void UCES_decrypt_key(uint8_t* uc_dec_key, const uint8_t* shared_key, const uint8_t* uc_enc_key)
-{
-  memcpy(uc_dec_key, uc_enc_key, 32);
-  UCES_encrypt_content(shared_key, uc_dec_key, 32);
-}
-
-void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num, const uint8_t* uc_enc_key, const uint8_t* pubkey_client)
+// To generate the decrypt key for a particular piece of content, and a particular piece of content
+//  Input:
+//    random_num: a 32-byte number, a seed to generate the key
+//    uc_enc_key: 32-byte encrypting key for the particular piece of content
+//    pubkey_client: the particular client's public key
+//  Output: uc_dec_key: 64 bytes, the key for the particular client to decrypt the particular content
+//
+void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num,
+                        const uint8_t* uc_enc_key, const uint8_t* pubkey_client)
 {
   uint8_t pubkey_server[32];
   uint8_t sharedkey_server[32];
@@ -226,40 +246,7 @@ void UCES_encrypt_content(const uint8_t* uc_enc_key, uint8_t* buf, uint32_t leng
   AES_CBC_encrypt_buffer(&ctx, buf, length);
 }
 
-/* Decrypt a piece of content using uc_dec_key (32bytes)
-  To decrypt the content, there are a few steps as below:
-  0) get server_pub_key, get user's fingerprint (not in this function)
-  1) detect the user's device and calculate the device finger print
-  2) calculate the user's private key (related to the device)
-  3) calculate the sharedkey between the server and the client/device
-  4) decrypt the symmetric key for content
-  5) decode the content
-*/
 
-/*void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
-              const uint8_t* user_fp, const uint8_t* server_pub_key)
-{
-  struct AES_ctx e_ctx;
-  uint8_t uc_enc_key[32];
-  uint8_t device_fp[32];
-  uint8_t user_fingerprint[32];
-  uint8_t pri_key[32];
-  sha256_context sha_ctx;
-  uint8_t shared_key[32];
-
-  UCES_device_fingerprint(device_fp);
-  sha256_init(&sha_ctx);
-
-  sha256_hash(&sha_ctx, user_fingerprint, 32);
-  sha256_hash(&sha_ctx, device_fp, 32);
-  sha256_done(&sha_ctx, pri_key);
-
-  curve25519_donna(shared_key, pri_key, server_pub_key);
-  UCES_decrypt_key(uc_enc_key, shared_key, uc_dec_key);
-
-  AES_init_ctx_iv(&e_ctx, uc_enc_key, uc_enc_key+16);
-  AES_CBC_decrypt_buffer(&e_ctx, buf, length);
-}*/
 
 void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t length,
               const uint8_t* user_fp, void (*device_fp_cb)(uint8_t* dev_fp))
@@ -292,7 +279,7 @@ void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t leng
   printf("Content encryption key:\n");
   phex(uc_enc_key);
 
-  
+
   AES_init_ctx_iv(&e_ctx, uc_enc_key, uc_enc_key+16);
   AES_CBC_decrypt_buffer(&e_ctx, buf, length);
 

@@ -48,7 +48,9 @@ def test_full_cycle(content, length):
     buf = create_string_buffer(content, length)
     random_buf = create_string_buffer(32)
 
-    print("\n\n Full Cycle Test Case")
+    print("\n\n ======== Full Cycle Test Case =========")
+    print("Original data - %d bytes (the 1st 32 bytes):"%length)
+    print_key(content)
 
     # step 1: create user finger_print and create client pub_key
     user_info = "Username: steven; password='whatever';" \
@@ -95,4 +97,3 @@ if __name__ == '__main__':
 
     content = "abcdefghijklmnopqrstuvwxyz789012" * (1024*256/32)
     test_full_cycle(content, 256*1024)
-    

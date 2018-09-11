@@ -50,7 +50,7 @@ def test_full_cycle(content, length):
 
     print("\n\n ======== Full Cycle Test Case =========")
     print("Original data - %d bytes (the 1st 32 bytes):"%length)
-    print_key(content)
+    print(content[0:32])
 
     # step 1: create user finger_print and create client pub_key
     user_info = "Username: steven; password='whatever';" \

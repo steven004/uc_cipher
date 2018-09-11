@@ -216,14 +216,14 @@ void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num,
 
   static const uint8_t basepoint[32] = {9};
   curve25519_donna(pubkey_server, random_num, basepoint);
-  printf("Server public key is: \n");
-  phex(pubkey_server);
+  // printf("Server public key is: \n");
+  // phex(pubkey_server);
 
 
   // Get shared key:
   curve25519_donna(sharedkey_server, random_num, pubkey_client);
-  printf("Server shared key is: \n");
-  phex(sharedkey_server);
+  // printf("Server shared key is: \n");
+  // phex(sharedkey_server);
 
   memcpy(uc_dec_key, pubkey_server, 32);
 
@@ -239,38 +239,6 @@ void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num,
 
 
 }
-
-void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num, const uint8_t* uc_enc_key, const uint8_t* pubkey_client)
-{
-  uint8_t pubkey_server[32];
-  uint8_t sharedkey_server[32];
-
-  static const uint8_t basepoint[32] = {9};
-  curve25519_donna(pubkey_server, random_num, basepoint);
-  printf("Server public key is: \n");
-  phex(pubkey_server);
-
-
-  // Get shared key:
-  curve25519_donna(sharedkey_server, random_num, pubkey_client);
-  printf("Server shared key is: \n");
-  phex(sharedkey_server);
-
-  memcpy(uc_dec_key, pubkey_server, 32);
-
-  int i;
-  for(i=0; i<32; i++){
-    sharedkey_server[i] ^= uc_enc_key[i];
-  }
-  memcpy(uc_dec_key + 32, sharedkey_server, 32);
-
-  //curve25519_donna(sharedkey_client, random_num, pubkey_server);
-  //printf("shrdkey_client:\t");
-  //phex(sharedkey_client);
-
-
-}
-
 
 /* Encrypt a piece of content using the uc_enc_key (32bytes: 256bits)
    Algorithm: ENHANCED_AES

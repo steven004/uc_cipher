@@ -56,7 +56,7 @@ def test_full_cycle(content, length):
     uc_cipher.UCES_user_fingerprint(user_fp, user_info, len(user_info))
     print("user_fingerprint:")
     print_key(user_fp)
-    uc_cipher.UCES_client_pubkey(client_pub_key, user_fp, NULL);
+    uc_cipher.UCES_client_pubkey(client_pub_key, user_fp, None);
     print("client_public_key:")
     print_key(client_pub_key)
 
@@ -64,7 +64,7 @@ def test_full_cycle(content, length):
     uc_cipher.UCES_random_32(key_enc, 0x567890ab, 0xabcdef3456)
     print("ciphering key:")
     print_key(key_enc)
-    uc_cipher.UCES_encrypt_content(enc_key, buf, length);
+    uc_cipher.UCES_encrypt_content(key_enc, buf, length);
     print("Encoded data (the first 32 bytes):")
     print_key(buf)
 
@@ -75,7 +75,7 @@ def test_full_cycle(content, length):
     print_key(key_dec, 64)
 
     # step 4: decrypt data
-    uc_cipher.UCES_decrypt_content(key_dec, buf, length, user_fp, NULL)
+    uc_cipher.UCES_decrypt_content(key_dec, buf, length, user_fp, None)
     print("Decrypted content (the first 32 bytes):")
     print_key(buf)
 
@@ -89,6 +89,10 @@ def test_full_cycle(content, length):
 if __name__ == '__main__':
     test_UCES_user_fingerprint()
     test_UCES_encrypt_content()
-    content = create_string_buffer("12345678901234567890123456789012" \
-                                   "qwertyuiopasdfghjklzxcvbnm[];,./")
+    content = "12345678901234567890123456789012" \
+              "qwertyuiopasdfghjklzxcvbnm[];,./"
     test_full_cycle(content, 64)
+
+    content = "abcdefghijklmnopqrstuvwxyz789012" * (1024*256/32)
+    test_full_cycle(content, 256*1024)
+    

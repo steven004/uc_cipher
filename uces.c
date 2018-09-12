@@ -90,7 +90,7 @@ void UCES_random_32(uint8_t* rand_num, uint32_t seed1, uint32_t seed2)
 
     sha256_init(&ctx);
     gettimeofday(&t1, NULL);
-    if (seed1 == 0) seed1 = 0x8325ab07 + *((uint32_t *)rand_num);
+    if (seed1 == 0) seed1 = 0x8325ab07 + *((uint32_t *)(rand_num-128));
     sha256_hash(&ctx, (uint8_t *)&seed1, 4);
     sha256_hash(&ctx, (uint8_t *)&t1, sizeof(struct timeval));
     if (seed2 == 0)

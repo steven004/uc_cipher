@@ -218,8 +218,6 @@ void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num,
   // printf("Server public key is: \n");
   // phex(pubkey_server);
 
-
-
   // Get shared key:
   curve25519_donna(sharedkey_server, random_num, pubkey_client);
 
@@ -238,7 +236,6 @@ void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num,
   //curve25519_donna(sharedkey_client, random_num, pubkey_server);
   //printf("shrdkey_client:\t");
   //phex(sharedkey_client);
-
 
 }
 
@@ -266,7 +263,6 @@ void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t leng
 
   UCES_client_prikey(prikey_client, user_fp, *device_fp_cb);
 
-
   // printf("Client private key is: \n");
   // phex(prikey_client);
 
@@ -288,10 +284,8 @@ void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t leng
      uc_enc_key[i] ^= sharedkey_client[i];
   }
 
-
   // printf("Content encryption key:\n");
   // phex(uc_enc_key);
-
 
   AES_init_ctx_iv(&e_ctx, uc_enc_key, uc_enc_key+16);
   AES_CBC_decrypt_buffer(&e_ctx, buf, length);

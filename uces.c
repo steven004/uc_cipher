@@ -33,13 +33,13 @@ NOTE:   In this encryption/decryption, 128bit key and 128bit iv are required
 void get_cpuid (char *id);
 int get_mac(char* mac);
 
-static void phex(uint8_t* str)
-{
-    unsigned char i;
-    for (i = 0; i < 32; ++i)
-        printf("%.2x", str[i]);
-    printf("\n\n");
-}
+//static void phex(uint8_t* str)
+//{
+//    unsigned char i;
+//    for (i = 0; i < 32; ++i)
+//        printf("%.2x", str[i]);
+//    printf("\n\n");
+//}
 
 /* The implementation also depends on curve25519-donna.c */
 int curve25519_donna(uint8_t *shared_key, const uint8_t *my_pri_key, const uint8_t *his_pub_key);
@@ -188,14 +188,14 @@ void UCES_gen_decrypt_key(uint8_t* uc_dec_key, const uint8_t* random_num, const 
 
   static const uint8_t basepoint[32] = {9};
   curve25519_donna(pubkey_server, random_num, basepoint);
-  printf("Server public key is: \n");
-  phex(pubkey_server);
+  //printf("Server public key is: \n");
+  //phex(pubkey_server);
 
 
   // Get shared key:
   curve25519_donna(sharedkey_server, random_num, pubkey_client);
-  printf("Server shared key is: \n");
-  phex(sharedkey_server);
+  //printf("Server shared key is: \n");
+  //phex(sharedkey_server);
 
   memcpy(uc_dec_key, pubkey_server, 32);
 
@@ -271,16 +271,16 @@ void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t leng
 
   UCES_client_prikey(prikey_client, user_fp, *device_fp_cb);
 
-  printf("Client private key is: \n");
-  phex(prikey_client);
+  //printf("Client private key is: \n");
+  //phex(prikey_client);
 
   //curve25519_donna(pub_key, pri_key, basepoint);
   uint8_t sharedkey_client[32];
 
   memcpy(pubkey_server, uc_dec_key, 32);
   curve25519_donna(sharedkey_client, prikey_client, pubkey_server);
-  printf("Client shared key is: \n");
-  phex(sharedkey_client);
+  //printf("Client shared key is: \n");
+  //phex(sharedkey_client);
 
   uint8_t uc_enc_key[32];
   memcpy(uc_enc_key, uc_dec_key + 32, 32);
@@ -289,8 +289,8 @@ void UCES_decrypt_content(const uint8_t* uc_dec_key, uint8_t* buf, uint32_t leng
      uc_enc_key[i] ^= sharedkey_client[i];
   }
 
-  printf("Content encryption key:\n");
-  phex(uc_enc_key);
+  //printf("Content encryption key:\n");
+  //phex(uc_enc_key);
 
   
   AES_init_ctx_iv(&e_ctx, uc_enc_key, uc_enc_key+16);

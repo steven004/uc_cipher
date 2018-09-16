@@ -1,3 +1,7 @@
+
+# Make this repository to priviate. Please contact author for more information 
+
+
 ### Ciphering lib for ......
 
 Shared key via curve25519

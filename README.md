@@ -1,5 +1,5 @@
 
-# Make this repository to priviate. Please contact author for more information 
+# This repository is set to priviate. Please contact author for more information 
 
 
 ### Ciphering lib for ......
